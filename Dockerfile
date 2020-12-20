@@ -28,4 +28,4 @@ EXPOSE 3000 3010
 
 USER 'split-synchronizer'
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+CMD ["sh", "entrypoint.sh"]

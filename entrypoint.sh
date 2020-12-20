@@ -292,4 +292,4 @@ if [ ! -z ${SPLIT_SYNC_ADVANCED_PARAMETERS+x} ]; then
   PARAMETERS="${PARAMETERS} ${SPLIT_SYNC_ADVANCED_PARAMETERS}"
 fi
 
-exec split-sync ${PARAMETERS}
+exec split-sync ${PARAMETERS} -sync-admin-port $PORT
