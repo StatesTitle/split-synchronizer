@@ -210,16 +210,16 @@ else
   if [ ! -z ${REDIS_URL+x} ]; then
     # REDIS_URL is in the form redis://:pass@host:port
     # Use : as delimiter on REDIS_URL in the form of pass@host, then separate into pass and host
-    CONNECTION_STRING=$(awk -F':' '{ print $3 }' <<< "$REDIS_URL")
+    CONNECTION_STRING=$(echo "$REDIS_URL" | awk -F':' '{ print $3 }')
 
     # Use @ as delimiter on CONNECTION_STRING to separate pass@host into pass (1) and host (2)
-    SPLIT_SYNC_REDIS_PASS=$(awk -F'@' '{ print $1 }' <<< "$CONNECTION_STRING")
+    SPLIT_SYNC_REDIS_PASS=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $1 }')
     PARAMETERS="${PARAMETERS} -redis-pass=${SPLIT_SYNC_REDIS_PASS}"
 
-    SPLIT_SYNC_REDIS_HOST=$(awk -F'@' '{ print $2 }' <<< "$CONNECTION_STRING")
+    SPLIT_SYNC_REDIS_HOST=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $2 }')
     PARAMETERS="${PARAMETERS} -redis-host=${SPLIT_SYNC_REDIS_HOST}"
 
-    SPLIT_SYNC_REDIS_PORT=$(awk -F':' '{ print $4 }' <<< "$REDIS_URL")
+    SPLIT_SYNC_REDIS_PORT=$(echo "$REDIS_URL" | awk -F':' '{ print $4 }')
     PARAMETERS="${PARAMETERS} -redis-port=${SPLIT_SYNC_REDIS_PORT}"
   fi
 
