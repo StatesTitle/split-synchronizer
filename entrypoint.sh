@@ -207,20 +207,24 @@ then
 else
   printf "Running in PRODUCER mode"
 
-  if [ ! -z ${SPLIT_SYNC_REDIS_HOST+x} ]; then
-    PARAMETERS="${PARAMETERS} -redis-host=${SPLIT_SYNC_REDIS_HOST}"
-  fi
+  if [ ! -z ${REDIS_URL+x} ]; then
+    # REDIS_URL is in the form redis://:pass@host:port
+    # Use : as delimiter on REDIS_URL in the form of pass@host, then separate into pass and host
+    CONNECTION_STRING=$(echo "$REDIS_URL" | awk -F':' '{ print $3 }')
 
-  if [ ! -z ${SPLIT_SYNC_REDIS_PORT+x} ]; then
+    # Use @ as delimiter on CONNECTION_STRING to separate pass@host into pass (1) and host (2)
+    SPLIT_SYNC_REDIS_PASS=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $1 }')
+    PARAMETERS="${PARAMETERS} -redis-pass=${SPLIT_SYNC_REDIS_PASS}"
+
+    SPLIT_SYNC_REDIS_HOST=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $2 }')
+    PARAMETERS="${PARAMETERS} -redis-host=${SPLIT_SYNC_REDIS_HOST}"
+
+    SPLIT_SYNC_REDIS_PORT=$(echo "$REDIS_URL" | awk -F':' '{ print $4 }')
     PARAMETERS="${PARAMETERS} -redis-port=${SPLIT_SYNC_REDIS_PORT}"
   fi
 
   if [ ! -z ${SPLIT_SYNC_REDIS_DB+x} ]; then
     PARAMETERS="${PARAMETERS} -redis-db=${SPLIT_SYNC_REDIS_DB}"
-  fi
-
-  if [ ! -z ${SPLIT_SYNC_REDIS_PASS+x} ]; then
-    PARAMETERS="${PARAMETERS} -redis-pass=${SPLIT_SYNC_REDIS_PASS}"
   fi
 
   if [ ! -z ${SPLIT_SYNC_REDIS_PREFIX+x} ]; then
