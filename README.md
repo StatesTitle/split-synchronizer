@@ -13,11 +13,11 @@ By default, Split’s SDKs keep segment and split data synchronized as users nav
   - This command creates a Heroku app named `app_name` in space `space` with the `container` stack and a Heroku Redis attachment of `plan_type`. Note that adding the Heroku Redis attachment can take 10-30 minutes.
   - For example, running ` heroku create stp-split-sync--example --space=st-staging -s container --addons=heroku-redis:hobby-dev` would create an app named `stp-split-sync--example` in the `st-staging` space with the `hobby-dev` plan of Heroku Redis
 
-2. Attach the app to the `st-split` pipeline via
+2. Attach the new synchronizer app to the `st-split` pipeline via
 > heroku pipelines:add st-split -a <app_name>
 
-3. Add the appropriate API key from Split's `Admin Settings->Workspace settings->API keys` as an environment variable `SPLIT_SYNC_API_KEY` via
-> heroku config:set SPLIT_SYNC_API_KEY=<api_key>
+3. Add the appropriate API key from Split's `Admin Settings->Workspace settings->API keys` as an environment variable `SPLIT_SYNC_API_KEY` on the new synchronizer via
+> heroku config:set SPLIT_SYNC_API_KEY=<api_key> -a <app_name>
 
 4. Push this codebase to the newly created app via 
 > git push https://git.heroku.com/<app_name>.git master:master
