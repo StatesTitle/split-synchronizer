@@ -7,14 +7,20 @@ By default, Split’s SDKs keep segment and split data synchronized as users nav
 [![Twitter Follow](https://img.shields.io/twitter/follow/splitsoftware.svg?style=social&label=Follow&maxAge=1529000)](https://twitter.com/intent/follow?screen_name=splitsoftware)
 
 ## Deploying to Heroku
-1. Create a Heroku app by going to the [private space](https://dashboard.heroku.com/teams/states-title/spaces) you want to add the new synchronizer to
-2. Set the image as container via 
-> `heroku stack:set container -a <app_name>`
-3. Add the go language pack via 
-> `heroku buildpacks:set heroku/go -a <app_name>`
+1. Create a Heroku app for the new Split synchronizer via
+> heroku create <app_name> --space=<space> -s container --addons=heroku-redis:<plan_type>
+    
+  - This command creates a Heroku app named `app_name` in space `space` with the `container` stack and a Heroku Redis attachment of `plan_type`. Note that adding the Heroku Redis attachment can take 10-30 minutes.
+  - For example, running ` heroku create stp-split-sync--example --space=st-staging -s container --addons=heroku-redis:hobby-dev` would create an app named `stp-split-sync--example` in the `st-staging` space with the `hobby-dev` plan of Heroku Redis
+
+2. Attach the app to the `st-split` pipeline via
+> heroku pipelines:add st-split -a <app_name>
+
+3. Add the appropriate API key from Split's `Admin Settings->Workspace settings->API keys` as an environment variable `SPLIT_SYNC_API_KEY` via
+> heroku config:set SPLIT_SYNC_API_KEY=<api_key>
+
 4. Push this codebase to the newly created app via 
-> `git push https://git.heroku.com/<app_name>.git master:master`
-5. Add the appropriate API key from Split's `Admin Settings->Workspace settings->API keys` as an environment variable `SPLIT_SYNC_API_KEY`
+> git push https://git.heroku.com/<app_name>.git master:master
 
 See [How to deploy Synchronizer Docker Container in Heroku](https://help.split.io/hc/en-us/articles/360033291832-How-to-deploy-Synchronizer-Docker-Container-in-Heroku-) for details.
 
