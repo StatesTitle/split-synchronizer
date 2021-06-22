@@ -19,7 +19,10 @@ By default, Split’s SDKs keep segment and split data synchronized as users nav
 3. Add the appropriate API key from Split's `Admin Settings->Workspace settings->API keys` as an environment variable `SPLIT_SYNC_API_KEY` on the new synchronizer via
 > heroku config:set SPLIT_SYNC_API_KEY=<api_key> -a <app_name>
 
-4. Push this codebase to the newly created app via 
+4. If either `REDIS_TLS_URL` is present or if using a Premium Heroku Redis plan (which forces TLS), we need to update how we handle TLS name validation because of how Heroku handles Automatic Certificate Management:
+> heroku config:set SPLIT_SYNC_REDIS_TLS_SKIP_NAME_VALIDATION=true -a <app_name>
+
+5. Push this codebase to the newly created app via 
 > git push https://git.heroku.com/<app_name>.git master:master
 
 See [How to deploy Synchronizer Docker Container in Heroku](https://help.split.io/hc/en-us/articles/360033291832-How-to-deploy-Synchronizer-Docker-Container-in-Heroku-) for details.
