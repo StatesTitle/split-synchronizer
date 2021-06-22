@@ -207,6 +207,11 @@ then
 else
   printf "Running in PRODUCER mode"
 
+  if [ ! -z ${REDIS_TLS_URL+x} ]; then
+    echo "REDIS_TLS_URL available, using that instead of REDIS_URL"
+    REDIS_URL=$REDIS_TLS_URL
+  fi
+
   if [ ! -z ${REDIS_URL+x} ]; then
     # Redis URLs starting with `rediss://:` are TLS enabled, while those starting with `redis://:` are not
     REDIS_PREFIX=$(echo "$REDIS_URL" | awk -F':' '{ print $1 }')
