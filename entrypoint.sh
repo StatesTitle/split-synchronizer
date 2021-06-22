@@ -207,7 +207,23 @@ then
 else
   printf "Running in PRODUCER mode"
 
-  if [ ! -z ${REDIS_URL+x} ]; then
+  if [ ! -z ${REDIS_TLS_URL+x} ]; then
+    SPLIT_SYNC_REDIS_TLS=true
+
+    # REDIS_TLS_URL is in the form rediss://:pass@host:port
+    # Use : as delimiter on REDIS_TLS_URL in the form of pass@host, then separate into pass and host
+    CONNECTION_STRING=$(echo "$REDIS_TLS_URL" | awk -F':' '{ print $3 }')
+
+    # Use @ as delimiter on CONNECTION_STRING to separate pass@host into pass (1) and host (2)
+    SPLIT_SYNC_REDIS_PASS=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $1 }')
+    PARAMETERS="${PARAMETERS} -redis-pass=${SPLIT_SYNC_REDIS_PASS}"
+
+    SPLIT_SYNC_REDIS_HOST=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $2 }')
+    PARAMETERS="${PARAMETERS} -redis-host=${SPLIT_SYNC_REDIS_HOST}"
+
+    SPLIT_SYNC_REDIS_PORT=$(echo "$REDIS_TLS_URL" | awk -F':' '{ print $4 }')
+    PARAMETERS="${PARAMETERS} -redis-port=${SPLIT_SYNC_REDIS_PORT}"
+  elif [ ! -z ${REDIS_URL+x} ]; then
     # REDIS_URL is in the form redis://:pass@host:port
     # Use : as delimiter on REDIS_URL in the form of pass@host, then separate into pass and host
     CONNECTION_STRING=$(echo "$REDIS_URL" | awk -F':' '{ print $3 }')
