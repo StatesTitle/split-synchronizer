@@ -208,11 +208,12 @@ else
   printf "Running in PRODUCER mode"
 
   if [ ! -z ${REDIS_URL+x} ]; then
-    echo "Using Split Synchronizer with Redis TLS"
     REDIS_PREFIX=$(echo "$REDIS_URL" | awk -F':' '{ print $1 }')
     if [[ "$REDIS_PREFIX" == "rediss" ]]; then
+      echo "Using Split Synchronizer with Redis TLS"
       SPLIT_SYNC_REDIS_TLS=true
     elif [[ "$REDIS_PREFIX" == "redis" ]]; then
+      echo "Using Split Synchronizer without Redis TLS"
       SPLIT_SYNC_REDIS_TLS=false
     fi
     # REDIS_URL is in the form redis://:pass@host:port or rediss://:pass@host:port if using TLS
@@ -224,9 +225,11 @@ else
     PARAMETERS="${PARAMETERS} -redis-pass=${SPLIT_SYNC_REDIS_PASS}"
 
     SPLIT_SYNC_REDIS_HOST=$(echo "$CONNECTION_STRING" | awk -F'@' '{ print $2 }')
+    echo "Using Redis host $SPLIT_SYNC_REDIS_HOST"
     PARAMETERS="${PARAMETERS} -redis-host=${SPLIT_SYNC_REDIS_HOST}"
 
     SPLIT_SYNC_REDIS_PORT=$(echo "$REDIS_URL" | awk -F':' '{ print $4 }')
+    echo "Using Redis port $SPLIT_SYNC_REDIS_PORT"
     PARAMETERS="${PARAMETERS} -redis-port=${SPLIT_SYNC_REDIS_PORT}"
   fi
 
